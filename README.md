@@ -2,6 +2,8 @@
 
 WiFi 데이터 분석 웹 애플리케이션
 
+**URL: https://wifi-data-dashboard.vercel.app/**
+
 ## 빠른 시작
 
 ### Vercel로 배포 (가장 쉬움!)
