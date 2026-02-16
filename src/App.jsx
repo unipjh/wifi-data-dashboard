@@ -99,6 +99,11 @@ export default function WifiAnalysisDashboard() {
     const file = event.target.files[0];
     if (!file) return;
 
+    processFile(file);
+  };
+
+  // 파일 처리 함수
+  const processFile = (file) => {
     setFileName(file.name);
     const reader = new FileReader();
     
@@ -111,6 +116,34 @@ export default function WifiAnalysisDashboard() {
     };
     
     reader.readAsText(file);
+  };
+
+  // 드래그 오버 이벤트
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // 드래그 리브 이벤트
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  // 드롭 이벤트
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.name.endsWith('.csv')) {
+        processFile(file);
+      } else {
+        alert('CSV 파일만 업로드 가능합니다.');
+      }
+    }
   };
 
   // 히스토그램 데이터
@@ -179,7 +212,13 @@ export default function WifiAnalysisDashboard() {
 
         {/* 파일 업로드 */}
         <div style={{ background: 'white', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', padding: '2rem', marginBottom: '2rem' }}>
-          <div style={{ border: '2px dashed #2196F3', borderRadius: '8px', padding: '2rem', textAlign: 'center' }}>
+          <div 
+            style={{ border: '2px dashed #2196F3', borderRadius: '8px', padding: '2rem', textAlign: 'center', cursor: 'pointer', transition: 'background-color 0.3s' }}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => document.getElementById('file-upload').click()}
+          >
             <input
               type="file"
               accept=".csv"
@@ -187,15 +226,15 @@ export default function WifiAnalysisDashboard() {
               style={{ display: 'none' }}
               id="file-upload"
             />
-            <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
-              <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📁</div>
-              <div style={{ fontSize: '1.5rem', fontWeight: '600', color: '#424242', marginBottom: '0.5rem' }}>
-                CSV 파일 업로드
-              </div>
-              <div style={{ color: '#757575', marginBottom: '1rem' }}>
-                파일을 선택하거나 드래그 앤 드롭하세요
-              </div>
-              <button style={{ 
+            <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📁</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: '600', color: '#424242', marginBottom: '0.5rem' }}>
+              CSV 파일 업로드
+            </div>
+            <div style={{ color: '#757575', marginBottom: '1rem' }}>
+              파일을 선택하거나 드래그 앤 드롭하세요
+            </div>
+            <button 
+              style={{ 
                 background: '#2196F3', 
                 color: 'white', 
                 padding: '0.75rem 1.5rem', 
@@ -204,10 +243,11 @@ export default function WifiAnalysisDashboard() {
                 fontSize: '1rem',
                 cursor: 'pointer',
                 fontWeight: '600'
-              }}>
-                파일 선택
-              </button>
-            </label>
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              파일 선택
+            </button>
           </div>
           {fileName && (
             <div style={{ marginTop: '1rem', textAlign: 'center', color: '#2196F3', fontWeight: '600' }}>
